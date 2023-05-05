@@ -1,7 +1,7 @@
 use clap::Command;
 //use ansi_term::Colour::*;
-use mpris::{PlaybackStatus, PlayerFinder};
-
+mod scriptwrap;
+use scriptwrap::Player;
 
 
 fn main() -> Result<(), Box<dyn std::error::Error>>{
@@ -14,30 +14,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
         .subcommand(Command::new("next"))
         .subcommand(Command::new("previous"))
         .get_matches();
-
-    let pl_find = PlayerFinder::new()
-        .map_err(|e| format!("[ERROR] D-Bus denied: {}", e))?;
-    let pl = pl_find
-        .find_active()
-        .map_err(|e| format!("[ERROR] No player: {}",e))?;
+    
+    
+    
 
     //programs need time to run?? crazy.. .
 
     match m.subcommand() {
-        Some(("pause", _)) => pl.pause()?,
-        Some(("play", _)) => pl.play()?,
-        Some(("next", _)) => pl.next()?,
-        Some(("previous", _)) => pl.previous()?,
+        Some(("pause", _)) => print!("{}",Player::pause("Music")?),
+        Some(("play", _)) => print!("{}",Player::play("Music")?),
+        Some(("next", _)) => print!("{}",Player::next("Music")?),
+        Some(("previous", _)) => print!("{}",Player::previous("Music")?),
         _ => {
-            let status = pl
-                .get_playback_status()
-                .map_err(|e| format!("[ERROR] Can't get status: {}",e))?;
-            if status != PlaybackStatus::Stopped
-            {
-                println!("currently playing: {:?}", pl
-                         .get_metadata().unwrap()
-                         .title().unwrap());
-            }
+            print!("{}",Player::get_track("Music")?)
         }
     }
 
