@@ -15,18 +15,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
         .subcommand(Command::new("previous"))
         .get_matches();
     
+    let player = Player::init();
     
     
 
     //programs need time to run?? crazy.. .
 
     match m.subcommand() {
-        Some(("pause", _)) => print!("{}",Player::pause("Music")?),
-        Some(("play", _)) => print!("{}",Player::play("Music")?),
-        Some(("next", _)) => print!("{}",Player::next("Music")?),
-        Some(("previous", _)) => print!("{}",Player::previous("Music")?),
+        Some(("pause", _)) => print!("{}",player::pause()?),
+        Some(("play", _)) => print!("{}",player::play()?),
+        Some(("next", _)) => print!("{}",player::next()?),
+        Some(("previous", _)) => print!("{}",player::previous()?),
         _ => {
-            print!("{}",Player::get_track("Music")?)
+            print!("{}",player::get_track("Music")?)
         }
     }
 

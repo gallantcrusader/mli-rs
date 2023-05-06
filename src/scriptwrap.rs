@@ -1,9 +1,25 @@
 use std::process::Command;
 
-pub struct Player;
+pub struct Player{
+    players: Vec<String>
+};
 
 impl Player{
-    pub fn play(player_name: &str) -> Result<String,Box<dyn std::error::Error>>
+    pub fn init() -> Self
+    {
+        let a = Command::new("osascript")
+            .arg("-e")
+            .arg(r#"if application "Spotify" is running
+            log "Spotify"
+            end if 
+            if application "Music" is running
+            log "Music"
+            end if
+            
+            "#)
+    }
+
+    pub fn play(&self) -> Result<String,Box<dyn std::error::Error>>
     {
         let a = Command::new("osascript")
             .arg("-e")
@@ -19,7 +35,7 @@ impl Player{
 
          Ok(std::str::from_utf8(&a.stdout)?.to_string())
     }
-    pub fn pause(player_name: &str) -> Result<String,Box<dyn std::error::Error>>
+    pub fn pause(&self) -> Result<String,Box<dyn std::error::Error>>
     {
         let a = Command::new("osascript")
             .arg("-e")
@@ -35,7 +51,7 @@ impl Player{
 
          Ok(std::str::from_utf8(&a.stdout)?.to_string())
     }
-    pub fn next(player_name: &str) -> Result<String,Box<dyn std::error::Error>>
+    pub fn next(&self) -> Result<String,Box<dyn std::error::Error>>
     {
         let a = Command::new("osascript")
             .arg("-e")
@@ -51,7 +67,7 @@ impl Player{
 
          Ok(std::str::from_utf8(&a.stdout)?.to_string())
     }
-    pub fn previous(player_name: &str) -> Result<String,Box<dyn std::error::Error>>
+    pub fn previous(&self) -> Result<String,Box<dyn std::error::Error>>
     {
         let a = Command::new("osascript")
             .arg("-e")
@@ -67,7 +83,7 @@ impl Player{
 
          Ok(std::str::from_utf8(&a.stdout)?.to_string())
     }
-    pub fn get_track(player_name: &str) -> Result<String,Box<dyn std::error::Error>>
+    pub fn get_track(&self) -> Result<String,Box<dyn std::error::Error>>
     {
         let a = Command::new("osascript")
             .arg("-e")
