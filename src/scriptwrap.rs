@@ -1,45 +1,30 @@
 use std::process::Command;
+use sysinfo::{System, SystemExt};
 
 pub struct Player {
     players: Vec<String>,
 }
 
-impl Player {
+impl Player { 
     pub fn init() -> Self {
-        let spot = Command::new("osascript")
-            .arg("-e")
-            .arg(
-                r#"if application "Spotify" is running then
-            return "Spotify"
-            end if 
-            "#,
-            )
-            .output()
-            .unwrap()
-            .stdout;
-        let mus = Command::new("osascript")
-            .arg("-e")
-            .arg(
-                r#"if application "Music" is running then
-            return "Music"
-            end if"#,
-            )
-            .output()
-            .unwrap()
-            .stdout;
+        let mut s = System::new();
+        s.refresh_processes();
+        
         let mut vecc: Vec<String> = Vec::new();
 
-        if spot.len() > 0 {
-            vecc.push(std::str::from_utf8(&spot).unwrap().trim().to_string());
+        let mus = s.processes_by_exact_name("Music").next();
+        let spot = s.processes_by_exact_name("Spotify").next();
+        match mus{
+            Some(_) =>  vecc.push("Music".to_owned()),
+            None => (),
         }
-        if mus.len() > 0 {
-            vecc.push(std::str::from_utf8(&mus).unwrap().trim().to_string());
+        match spot{
+            Some(_) => vecc.push("Spotify".to_owned()),
+            None => vecc.push("Music".to_owned()),
         }
-        if vecc.len() == 0 {
-            //fuck it
-            vecc.push("Music".to_owned());
+        Player {
+            players: vecc,
         }
-        Player { players: vecc }
     }
 
     pub fn play(&self) -> Result<String, Box<dyn std::error::Error>> {
