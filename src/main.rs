@@ -3,8 +3,7 @@ use clap::Command;
 mod scriptwrap;
 use scriptwrap::Player;
 
-
-fn main() -> Result<(), Box<dyn std::error::Error>>{
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let m = Command::new("mli")
         .author("Gallant")
         .version("0.1.0")
@@ -14,20 +13,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
         .subcommand(Command::new("next"))
         .subcommand(Command::new("previous"))
         .get_matches();
-    
+
     let player = Player::init();
-    
-    
 
     //programs need time to run?? crazy.. .
 
     match m.subcommand() {
-        Some(("pause", _)) => print!("{}",player::pause()?),
-        Some(("play", _)) => print!("{}",player::play()?),
-        Some(("next", _)) => print!("{}",player::next()?),
-        Some(("previous", _)) => print!("{}",player::previous()?),
+        Some(("pause", _)) => print!("{}", player.pause()?),
+        Some(("play", _)) => print!("{}", player.play()?),
+        Some(("next", _)) => print!("{}", player.next()?),
+        Some(("previous", _)) => print!("{}", player.previous()?),
         _ => {
-            print!("{}",player::get_track("Music")?)
+            print!("{}", player.get_track()?);
         }
     }
 
