@@ -4,9 +4,9 @@ use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum PlayerError {
-    #[error("Invalid UTF-8: {0}")]
-    TextError(#[from] std::str::Utf8Error),
-    #[error("Unable to get terminal output!")]
+    #[error("[ERROR] Invalid UTF-8: {0}")]
+    TextError(#[from] std::string::FromUtf8Error),
+    #[error("[ERROR] Unable to get terminal output!")]
     OutputError,
 }
 
@@ -47,8 +47,9 @@ impl Player {
             ))
             .output();
         if let Ok(b) = a {
-            print!("{}", std::str::from_utf8(&b.stderr)?);
-            Ok(std::str::from_utf8(&b.stdout)?.to_string())
+            print!("{}", String::from_utf8(b.stderr)?);
+            
+            Ok(String::from_utf8(b.stdout)?)
         } else {
             Err(PlayerError::OutputError)
         }
