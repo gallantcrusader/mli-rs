@@ -2,9 +2,8 @@ use std::process::Command;
 use sysinfo::{System, SystemExt};
 use thiserror::Error;
 
-
 #[derive(Error, Debug)]
-pub enum PlayerError{
+pub enum PlayerError {
     #[error("Invalid UTF-8: {0}")]
     TextError(#[from] std::str::Utf8Error),
     #[error("Unable to get terminal output!")]
@@ -15,26 +14,22 @@ pub struct Player {
     players: Vec<String>,
 }
 
-impl Player { 
+impl Player {
     pub fn init() -> Self {
         let mut s = System::new();
         s.refresh_processes();
-        
-        let mut vecc: Vec<String> = Vec::new();
 
-        let mus = s.processes_by_exact_name("Music").next();
+        let mut vec_c: Vec<String> = Vec::new();
+
         let spot = s.processes_by_exact_name("Spotify").next();
-        match mus{
-            Some(_) =>  vecc.push("Music".to_owned()),
-            None => (),
+
+
+        if spot.is_some() {
+            vec_c.push("Spotify".to_owned());
+        } else {
+            vec_c.push("Music".to_owned());
         }
-        match spot{
-            Some(_) => vecc.push("Spotify".to_owned()),
-            None => vecc.push("Music".to_owned()),
-        }
-        Player {
-            players: vecc,
-        }
+        Player { players: vec_c }
     }
 
     pub fn play(&self) -> Result<String, PlayerError> {
@@ -51,15 +46,12 @@ impl Player {
                 self.players.get(0).unwrap()
             ))
             .output();
-        if let Ok(b) = a{
+        if let Ok(b) = a {
             print!("{}", std::str::from_utf8(&b.stderr)?);
             Ok(std::str::from_utf8(&b.stdout)?.to_string())
-        }else {
+        } else {
             Err(PlayerError::OutputError)
         }
-        
-
-        
     }
     pub fn pause(&self) -> Result<String, PlayerError> {
         let a = Command::new("osascript")
@@ -75,10 +67,10 @@ impl Player {
                 self.players.get(0).unwrap()
             ))
             .output();
-        if let Ok(b) = a{
+        if let Ok(b) = a {
             print!("{}", std::str::from_utf8(&b.stderr)?);
             Ok(std::str::from_utf8(&b.stdout)?.to_string())
-        }else {
+        } else {
             Err(PlayerError::OutputError)
         }
     }
@@ -96,10 +88,10 @@ impl Player {
                 self.players.get(0).unwrap()
             ))
             .output();
-        if let Ok(b) = a{
+        if let Ok(b) = a {
             print!("{}", std::str::from_utf8(&b.stderr)?);
             Ok(std::str::from_utf8(&b.stdout)?.to_string())
-        }else {
+        } else {
             Err(PlayerError::OutputError)
         }
     }
@@ -117,10 +109,10 @@ impl Player {
                 self.players.get(0).unwrap()
             ))
             .output();
-        if let Ok(b) = a{
+        if let Ok(b) = a {
             print!("{}", std::str::from_utf8(&b.stderr)?);
             Ok(std::str::from_utf8(&b.stdout)?.to_string())
-        }else {
+        } else {
             Err(PlayerError::OutputError)
         }
     }
@@ -141,10 +133,10 @@ impl Player {
                 }
             ))
             .output();
-        if let Ok(b) = a{
+        if let Ok(b) = a {
             print!("{}", std::str::from_utf8(&b.stderr)?);
             Ok(std::str::from_utf8(&b.stdout)?.to_string())
-        }else {
+        } else {
             Err(PlayerError::OutputError)
         }
     }

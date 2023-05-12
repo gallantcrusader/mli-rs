@@ -3,10 +3,8 @@ use clap::Command;
 mod scriptwrap;
 use scriptwrap::Player;
 
-fn main(){
-    if cfg!(linux) || cfg!(windows){
-        panic!("Get out of here scamp!");
-    }
+#[cfg(target_os = "macos")]
+fn main() {
     let m = Command::new("mli")
         .author("Gallant")
         .version("0.1.0")
@@ -30,6 +28,4 @@ fn main(){
             print!("{}", player.get_track().unwrap());
         }
     }
-
-    
 }
