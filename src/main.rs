@@ -20,12 +20,12 @@ fn main() {
     //programs need time to run?? crazy.. .
 
     match m.subcommand() {
-        Some(("pause", _)) => print!("{}", player.pause().unwrap()),
-        Some(("play", _)) => print!("{}", player.play().unwrap()),
-        Some(("next", _)) => print!("{}", player.next().unwrap()),
-        Some(("previous", _)) => print!("{}", player.previous().unwrap()),
+        Some(("pause", _)) => print!("{}", player.send_command("pause").unwrap()),
+        Some(("play", _)) => print!("{}", player.send_command("play").unwrap()),
+        Some(("next", _)) => print!("{}", player.send_command("next track").unwrap()),
+        Some(("previous", _)) => print!("{}", player.send_command("back track").unwrap()),
         _ => {
-            print!("{}", player.get_track().unwrap());
+            print!("{}", player.send_command("get name of current track").unwrap());
         }
     }
 }

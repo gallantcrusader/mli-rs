@@ -32,18 +32,20 @@ impl Player {
         Player { players: vec_c }
     }
 
-    pub fn play(&self) -> Result<String, PlayerError> {
+    pub fn send_command(&self, command: &str) -> Result<String, PlayerError>
+    {
         let a = Command::new("osascript")
             .arg("-e")
             .arg(format!(
                 r#"tell application "{}"
             if it is running then
-            play
+            {}
             else
 		    return "not running"
         	end if
             end tell"#,
-                self.players.get(0).unwrap()
+                self.players.get(0).unwrap(),
+                command
             ))
             .output();
         if let Ok(b) = a {
@@ -53,91 +55,5 @@ impl Player {
             Err(PlayerError::OutputError)
         }
     }
-    pub fn pause(&self) -> Result<String, PlayerError> {
-        let a = Command::new("osascript")
-            .arg("-e")
-            .arg(format!(
-                r#"tell application "{}"
-            if it is running then
-            pause
-            else
-		    return "not running"
-        	end if
-            end tell"#,
-                self.players.get(0).unwrap()
-            ))
-            .output();
-        if let Ok(b) = a {
-            print!("{}", std::str::from_utf8(&b.stderr)?);
-            Ok(std::str::from_utf8(&b.stdout)?.to_string())
-        } else {
-            Err(PlayerError::OutputError)
-        }
-    }
-    pub fn next(&self) -> Result<String, PlayerError> {
-        let a = Command::new("osascript")
-            .arg("-e")
-            .arg(format!(
-                r#"tell application "{}"
-            if it is running then
-            next track
-            else
-		    return "not running"
-        	end if
-            end tell"#,
-                self.players.get(0).unwrap()
-            ))
-            .output();
-        if let Ok(b) = a {
-            print!("{}", std::str::from_utf8(&b.stderr)?);
-            Ok(std::str::from_utf8(&b.stdout)?.to_string())
-        } else {
-            Err(PlayerError::OutputError)
-        }
-    }
-    pub fn previous(&self) -> Result<String, PlayerError> {
-        let a = Command::new("osascript")
-            .arg("-e")
-            .arg(format!(
-                r#"tell application "{}"
-            if it is running then
-            back track
-            else
-		    return "not running"
-        	end if
-            end tell"#,
-                self.players.get(0).unwrap()
-            ))
-            .output();
-        if let Ok(b) = a {
-            print!("{}", std::str::from_utf8(&b.stderr)?);
-            Ok(std::str::from_utf8(&b.stdout)?.to_string())
-        } else {
-            Err(PlayerError::OutputError)
-        }
-    }
-    pub fn get_track(&self) -> Result<String, PlayerError> {
-        let a = Command::new("osascript")
-            .arg("-e")
-            .arg(format!(
-                r#"tell application "{}"
-            if it is running then
-            get name of current track
-            else
-		    return "not running"
-        	end if
-            end tell"#,
-                match self.players.get(0) {
-                    Some(a) => a,
-                    None => "Music",
-                }
-            ))
-            .output();
-        if let Ok(b) = a {
-            print!("{}", std::str::from_utf8(&b.stderr)?);
-            Ok(std::str::from_utf8(&b.stdout)?.to_string())
-        } else {
-            Err(PlayerError::OutputError)
-        }
-    }
+
 }
