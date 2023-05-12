@@ -1,9 +1,9 @@
 use clap::Command;
 //use ansi_term::Colour::*;
 mod scriptwrap;
-use scriptwrap::{PlayerError,Player};
+use scriptwrap::Player;
 
-fn main() -> Result<(), PlayerError> {
+fn main(){
     if cfg!(linux) || cfg!(windows){
         panic!("Get out of here scamp!");
     }
@@ -22,14 +22,14 @@ fn main() -> Result<(), PlayerError> {
     //programs need time to run?? crazy.. .
 
     match m.subcommand() {
-        Some(("pause", _)) => print!("{}", player.pause()?),
-        Some(("play", _)) => print!("{}", player.play()?),
-        Some(("next", _)) => print!("{}", player.next()?),
-        Some(("previous", _)) => print!("{}", player.previous()?),
+        Some(("pause", _)) => print!("{}", player.pause().unwrap()),
+        Some(("play", _)) => print!("{}", player.play().unwrap()),
+        Some(("next", _)) => print!("{}", player.next().unwrap()),
+        Some(("previous", _)) => print!("{}", player.previous().unwrap()),
         _ => {
-            print!("{}", player.get_track()?);
+            print!("{}", player.get_track().unwrap());
         }
     }
 
-    Ok(())
+    
 }

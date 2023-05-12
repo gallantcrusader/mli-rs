@@ -9,8 +9,6 @@ pub enum PlayerError{
     TextError(#[from] std::str::Utf8Error),
     #[error("Unable to get terminal output!")]
     OutputError,
-
-
 }
 
 pub struct Player {
