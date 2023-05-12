@@ -25,7 +25,10 @@ fn main() {
         Some(("next", _)) => print!("{}", player.send_command("next track").unwrap()),
         Some(("previous", _)) => print!("{}", player.send_command("back track").unwrap()),
         _ => {
-            print!("{}", player.send_command("get name of current track").unwrap());
+            print!(
+                "{}",
+                player.send_command("get name of current track").unwrap()
+            );
         }
     }
 }

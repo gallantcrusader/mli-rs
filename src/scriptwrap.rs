@@ -11,7 +11,7 @@ pub enum PlayerError {
 }
 
 pub struct Player {
-    players: Vec<String>,
+    player: String,
 }
 
 impl Player {
@@ -19,21 +19,20 @@ impl Player {
         let mut s = System::new();
         s.refresh_processes();
 
-        let mut the_vec_that_contains_players: Vec<String> = Vec::new();
-
         let spot = s.processes_by_exact_name("Spotify").next();
 
-
         if spot.is_some() {
-            the_vec_that_contains_players.push("Spotify".to_owned());
+            Player {
+                player: "Spotify".to_owned(),
+            }
         } else {
-            the_vec_that_contains_players.push("Music".to_owned());
+            Player {
+                player: "Music".to_owned(),
+            }
         }
-        Player { players: the_vec_that_contains_players }
     }
 
-    pub fn send_command(&self, command: &str) -> Result<String, PlayerError>
-    {
+    pub fn send_command(&self, command: &str) -> Result<String, PlayerError> {
         let a = Command::new("osascript")
             .arg("-e")
             .arg(format!(
@@ -44,8 +43,7 @@ impl Player {
 		    return "not running"
         	end if
             end tell"#,
-                self.players.get(0).unwrap(),
-                command
+                self.player, command
             ))
             .output();
         if let Ok(b) = a {
@@ -55,5 +53,4 @@ impl Player {
             Err(PlayerError::OutputError)
         }
     }
-
 }
