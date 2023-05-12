@@ -2,8 +2,12 @@ use clap::Command;
 mod scriptwrap;
 use scriptwrap::{Player, PlayerError};
 
-#[cfg(target_os = "macos")]
 fn main() -> std::process::ExitCode {
+    if !cfg!(target_os = "macos") {
+        eprintln!("[ERROR] Wrong OS Dummy!");
+        return std::process::ExitCode::FAILURE;
+    }
+
     match run() {
         Ok(()) => std::process::ExitCode::SUCCESS,
         Err(e) => {
