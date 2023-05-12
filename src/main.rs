@@ -1,10 +1,19 @@
 use clap::Command;
-//use ansi_term::Colour::*;
 mod scriptwrap;
-use scriptwrap::Player;
+use scriptwrap::{Player, PlayerError};
 
 #[cfg(target_os = "macos")]
-fn main() {
+fn main() -> std::process::ExitCode {
+    match run() {
+        Ok(()) => std::process::ExitCode::SUCCESS,
+        Err(e) => {
+            eprintln!("[ERROR] {e}");
+            std::process::ExitCode::FAILURE
+        }
+    }
+}
+
+fn run() -> Result<(), PlayerError> {
     let m = Command::new("mli")
         .author("Gallant")
         .version("0.1.0")
@@ -20,15 +29,13 @@ fn main() {
     //programs need time to run?? crazy.. .
 
     match m.subcommand() {
-        Some(("pause", _)) => print!("{}", player.send_command("pause").unwrap()),
-        Some(("play", _)) => print!("{}", player.send_command("play").unwrap()),
-        Some(("next", _)) => print!("{}", player.send_command("next track").unwrap()),
-        Some(("previous", _)) => print!("{}", player.send_command("back track").unwrap()),
+        Some(("pause", _)) => print!("{}", player.send_command("pause")?),
+        Some(("play", _)) => print!("{}", player.send_command("play")?),
+        Some(("next", _)) => print!("{}", player.send_command("next track")?),
+        Some(("previous", _)) => print!("{}", player.send_command("back track")?),
         _ => {
-            print!(
-                "{}",
-                player.send_command("get name of current track").unwrap()
-            );
+            print!("{}", player.send_command("get name of current track")?);
         }
     }
+    Ok(())
 }
