@@ -1,5 +1,17 @@
 use std::process::Command;
 use sysinfo::{System, SystemExt};
+use thiserror::Error;
+
+
+#[derive(Error, Debug)]
+pub enum PlayerError{
+    #[error("Invalid UTF-8: {0}")]
+    TextError(#[from] std::str::Utf8Error),
+    #[error("Unable to get terminal output!")]
+    OutputError,
+
+
+}
 
 pub struct Player {
     players: Vec<String>,
@@ -27,7 +39,7 @@ impl Player {
         }
     }
 
-    pub fn play(&self) -> Result<String, Box<dyn std::error::Error>> {
+    pub fn play(&self) -> Result<String, PlayerError> {
         let a = Command::new("osascript")
             .arg("-e")
             .arg(format!(
@@ -40,12 +52,18 @@ impl Player {
             end tell"#,
                 self.players.get(0).unwrap()
             ))
-            .output()?;
-        print!("{}", std::str::from_utf8(&a.stderr)?);
+            .output();
+        if let Ok(b) = a{
+            print!("{}", std::str::from_utf8(&b.stderr)?);
+            Ok(std::str::from_utf8(&b.stdout)?.to_string())
+        }else {
+            Err(PlayerError::OutputError)
+        }
+        
 
-        Ok(std::str::from_utf8(&a.stdout)?.to_string())
+        
     }
-    pub fn pause(&self) -> Result<String, Box<dyn std::error::Error>> {
+    pub fn pause(&self) -> Result<String, PlayerError> {
         let a = Command::new("osascript")
             .arg("-e")
             .arg(format!(
@@ -58,12 +76,15 @@ impl Player {
             end tell"#,
                 self.players.get(0).unwrap()
             ))
-            .output()?;
-        print!("{}", std::str::from_utf8(&a.stderr)?);
-
-        Ok(std::str::from_utf8(&a.stdout)?.to_string())
+            .output();
+        if let Ok(b) = a{
+            print!("{}", std::str::from_utf8(&b.stderr)?);
+            Ok(std::str::from_utf8(&b.stdout)?.to_string())
+        }else {
+            Err(PlayerError::OutputError)
+        }
     }
-    pub fn next(&self) -> Result<String, Box<dyn std::error::Error>> {
+    pub fn next(&self) -> Result<String, PlayerError> {
         let a = Command::new("osascript")
             .arg("-e")
             .arg(format!(
@@ -76,12 +97,15 @@ impl Player {
             end tell"#,
                 self.players.get(0).unwrap()
             ))
-            .output()?;
-        print!("{}", std::str::from_utf8(&a.stderr)?);
-
-        Ok(std::str::from_utf8(&a.stdout)?.to_string())
+            .output();
+        if let Ok(b) = a{
+            print!("{}", std::str::from_utf8(&b.stderr)?);
+            Ok(std::str::from_utf8(&b.stdout)?.to_string())
+        }else {
+            Err(PlayerError::OutputError)
+        }
     }
-    pub fn previous(&self) -> Result<String, Box<dyn std::error::Error>> {
+    pub fn previous(&self) -> Result<String, PlayerError> {
         let a = Command::new("osascript")
             .arg("-e")
             .arg(format!(
@@ -94,12 +118,15 @@ impl Player {
             end tell"#,
                 self.players.get(0).unwrap()
             ))
-            .output()?;
-        print!("{}", std::str::from_utf8(&a.stderr)?);
-
-        Ok(std::str::from_utf8(&a.stdout)?.to_string())
+            .output();
+        if let Ok(b) = a{
+            print!("{}", std::str::from_utf8(&b.stderr)?);
+            Ok(std::str::from_utf8(&b.stdout)?.to_string())
+        }else {
+            Err(PlayerError::OutputError)
+        }
     }
-    pub fn get_track(&self) -> Result<String, Box<dyn std::error::Error>> {
+    pub fn get_track(&self) -> Result<String, PlayerError> {
         let a = Command::new("osascript")
             .arg("-e")
             .arg(format!(
@@ -115,9 +142,12 @@ impl Player {
                     None => "Music",
                 }
             ))
-            .output()?;
-        print!("{}", std::str::from_utf8(&a.stderr)?);
-
-        Ok(std::str::from_utf8(&a.stdout)?.to_string())
+            .output();
+        if let Ok(b) = a{
+            print!("{}", std::str::from_utf8(&b.stderr)?);
+            Ok(std::str::from_utf8(&b.stdout)?.to_string())
+        }else {
+            Err(PlayerError::OutputError)
+        }
     }
 }

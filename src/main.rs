@@ -1,9 +1,12 @@
 use clap::Command;
 //use ansi_term::Colour::*;
 mod scriptwrap;
-use scriptwrap::Player;
+use scriptwrap::{PlayerError,Player};
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<(), PlayerError> {
+    if cfg!(linux) || cfg!(windows){
+        panic!("Get out of here scamp!");
+    }
     let m = Command::new("mli")
         .author("Gallant")
         .version("0.1.0")
