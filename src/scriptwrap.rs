@@ -19,17 +19,17 @@ impl Player {
         let mut s = System::new();
         s.refresh_processes();
 
-        let mut vec_c: Vec<String> = Vec::new();
+        let mut the_vec_that_contains_players: Vec<String> = Vec::new();
 
         let spot = s.processes_by_exact_name("Spotify").next();
 
 
         if spot.is_some() {
-            vec_c.push("Spotify".to_owned());
+            the_vec_that_contains_players.push("Spotify".to_owned());
         } else {
-            vec_c.push("Music".to_owned());
+            the_vec_that_contains_players.push("Music".to_owned());
         }
-        Player { players: vec_c }
+        Player { players: the_vec_that_contains_players }
     }
 
     pub fn send_command(&self, command: &str) -> Result<String, PlayerError>
